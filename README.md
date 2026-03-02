@@ -23,3 +23,9 @@ A browser-based 5v5 team builder for custom League of Legends games.
 
 - No backend required.
 - Data is in-memory only and resets when the page is reloaded.
+
+## AdSense Setup
+
+1. In `index.html`, replace both `ca-pub-XXXXXXXXXXXXXXXX` values with your real AdSense publisher ID.
+2. In `ads.txt`, replace `pub-0000000000000000` with the numeric part of your publisher ID.
+3. Deploy with `ads.txt` at your site root (for example: `https://your-domain.com/ads.txt`).
