@@ -287,6 +287,79 @@
             box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
         }
 
+        .contact-section {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .contact-card {
+            width: 100%;
+            max-width: 650px;
+            background: rgba(30, 35, 40, 0.8);
+            border: 2px solid #c8aa6e;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .contact-card h3 {
+            color: #c8aa6e;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+
+        .fs-form {
+            display: grid;
+            gap: 12px;
+        }
+
+        .fs-label {
+            color: #f0e6d2;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .fs-input,
+        .fs-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #463714;
+            border-radius: 8px;
+            background: #1e2328;
+            color: #f0e6d2;
+            font-size: 15px;
+        }
+
+        .fs-input:focus,
+        .fs-textarea:focus {
+            outline: none;
+            border-color: #c8aa6e;
+            box-shadow: 0 0 10px rgba(200, 170, 110, 0.3);
+        }
+
+        .fs-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .fs-button {
+            background: linear-gradient(45deg, #c8aa6e, #c89b3c);
+            color: #0f1419;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .fs-button:hover {
+            background: linear-gradient(45deg, #f0e6d2, #c8aa6e);
+        }
+
         @media (max-width: 768px) {
             .players-section,
             .teams-section {
@@ -434,6 +507,29 @@
             <div class="donation-card">
                 <p>💖 Enjoying the team maker? Consider buying me a coffee!</p>
                 <button class="btn-donation">☕ Donate</button>
+            </div>
+        </div>
+
+        <div class="contact-section">
+            <div class="contact-card">
+                <h3>📬 Contact Us</h3>
+                <form
+                    action="https://formspree.io/f/mzdaqlpg"
+                    class="fs-form"
+                    target="_top"
+                    method="POST"
+                >
+                    <label class="fs-label" for="contact-name">Your Name</label>
+                    <input class="fs-input" id="contact-name" name="name" required />
+
+                    <label class="fs-label" for="contact-email">Email Address</label>
+                    <input class="fs-input" id="contact-email" name="email" type="email" required />
+
+                    <label class="fs-label" for="contact-message">Message</label>
+                    <textarea class="fs-textarea" id="contact-message" name="message" required></textarea>
+
+                    <button class="fs-button" type="submit">Send Message</button>
+                </form>
             </div>
         </div>
     </div>
