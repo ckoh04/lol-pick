@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>League of Legends 5v5 Team Maker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0a1428, #1e2328);
+            color: #f0e6d2;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #c89b3c, #f0e6d2, #c8aa6e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .input-section {
+            background: rgba(30, 35, 40, 0.8);
+            border: 2px solid #c8aa6e;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 2px solid #463714;
+            border-radius: 8px;
+            background: #1e2328;
+            color: #f0e6d2;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #c8aa6e;
+            box-shadow: 0 0 10px rgba(200, 170, 110, 0.3);
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        select {
+            min-width: 150px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #c8aa6e, #c89b3c);
+            color: #0f1419;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #f0e6d2, #c8aa6e);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(200, 170, 110, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #5bc0de, #46b8da);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(45deg, #31b0d5, #269abc);
+            transform: translateY(-2px);
+        }
+
+        .players-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .player-list {
+            background: rgba(30, 35, 40, 0.8);
+            border: 2px solid #c8aa6e;
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .player-list h3 {
+            color: #c8aa6e;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .player-item {
+            background: rgba(15, 20, 25, 0.6);
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #c8aa6e;
+            transition: all 0.3s ease;
+        }
+
+        .player-item:hover {
+            background: rgba(15, 20, 25, 0.8);
+            transform: translateX(5px);
+        }
+
+        .rank-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+
+        .rank-iron { background: linear-gradient(45deg, #8B7355, #A0865C); }
+        .rank-bronze { background: linear-gradient(45deg, #CD7F32, #B8860B); }
+        .rank-silver { background: linear-gradient(45deg, #C0C0C0, #A9A9A9); }
+        .rank-gold { background: linear-gradient(45deg, #FFD700, #FFA500); }
+        .rank-platinum { background: linear-gradient(45deg, #40E0D0, #00CED1); }
+        .rank-emerald { background: linear-gradient(45deg, #50C878, #00FF7F); }
+        .rank-diamond { background: linear-gradient(45deg, #87CEEB, #4682B4); }
+        .rank-master { background: linear-gradient(45deg, #9370DB, #8A2BE2); }
+        .rank-grandmaster { background: linear-gradient(45deg, #FF6347, #DC143C); }
+        .rank-challenger { background: linear-gradient(45deg, #FFD700, #FF4500); }
+
+        .role-badge {
+            padding: 4px 8px;
+            margin: 2px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            background: rgba(200, 170, 110, 0.2);
+            color: #c8aa6e;
+            border: 1px solid #c8aa6e;
+        }
+
+        .role-assigned {
+            background: rgba(200, 170, 110, 0.4);
+            color: #f0e6d2;
+            border: 1px solid #f0e6d2;
+        }
+
+        .roles-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 4px;
+        }
+
+        .teams-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .team {
+            background: rgba(30, 35, 40, 0.8);
+            border: 2px solid #c8aa6e;
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .team h3 {
+            color: #c8aa6e;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .team-stats {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #c8aa6e;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .controls button {
+            flex: 1;
+            max-width: 300px;
+            min-width: 200px;
+        }
+
+        .remove-btn {
+            background: #d9534f;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .remove-btn:hover {
+            background: #c9302c;
+        }
+
+        .donation-section {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .donation-card {
+            background: rgba(30, 35, 40, 0.6);
+            border: 1px solid #463714;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            max-width: 300px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .donation-card p {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            color: #c8aa6e;
+        }
+
+        .btn-donation {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-donation:hover {
+            background: linear-gradient(45deg, #E55A2B, #E8851A);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .players-section,
+            .teams-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            input[type="text"], select {
+                min-width: unset;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .input-group {
+                flex-wrap: wrap;
+            }
+            
+            select {
+                min-width: 120px;
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚔️ League of Legends 5v5 Team Maker ⚔️</h1>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="playerName" placeholder="Enter player name" maxlength="30">
+                <select id="playerRank">
+                    <option value="">Select Rank</option>
+                    <optgroup label="Iron">
+                        <option value="1">Iron IV</option>
+                        <option value="2">Iron III</option>
+                        <option value="3">Iron II</option>
+                        <option value="4">Iron I</option>
+                    </optgroup>
+                    <optgroup label="Bronze">
+                        <option value="5">Bronze IV</option>
+                        <option value="6">Bronze III</option>
+                        <option value="7">Bronze II</option>
+                        <option value="8">Bronze I</option>
+                    </optgroup>
+                    <optgroup label="Silver">
+                        <option value="9">Silver IV</option>
+                        <option value="10">Silver III</option>
+                        <option value="11">Silver II</option>
+                        <option value="12">Silver I</option>
+                    </optgroup>
+                    <optgroup label="Gold">
+                        <option value="13">Gold IV</option>
+                        <option value="14">Gold III</option>
+                        <option value="15">Gold II</option>
+                        <option value="16">Gold I</option>
+                    </optgroup>
+                    <optgroup label="Platinum">
+                        <option value="17">Platinum IV</option>
+                        <option value="18">Platinum III</option>
+                        <option value="19">Platinum II</option>
+                        <option value="20">Platinum I</option>
+                    </optgroup>
+                    <optgroup label="Emerald">
+                        <option value="21">Emerald IV</option>
+                        <option value="22">Emerald III</option>
+                        <option value="23">Emerald II</option>
+                        <option value="24">Emerald I</option>
+                    </optgroup>
+                    <optgroup label="Diamond">
+                        <option value="25">Diamond IV</option>
+                        <option value="26">Diamond III</option>
+                        <option value="27">Diamond II</option>
+                        <option value="28">Diamond I</option>
+                    </optgroup>
+                    <optgroup label="Master+">
+                        <option value="29">Master</option>
+                        <option value="30">Grandmaster</option>
+                        <option value="31">Challenger</option>
+                    </optgroup>
+                </select>
+                <select id="primaryRole">
+                    <option value="">Primary Role</option>
+                    <option value="top">🪓 Top</option>
+                    <option value="jungle">🌿 Jungle</option>
+                    <option value="mid">⚡ Mid</option>
+                    <option value="bot">🏹 Bot (ADC)</option>
+                    <option value="support">🛡️ Support</option>
+                    <option value="fill">🎲 Fill</option>
+                </select>
+                <select id="secondaryRole">
+                    <option value="">Secondary Role</option>
+                    <option value="top">🪓 Top</option>
+                    <option value="jungle">🌿 Jungle</option>
+                    <option value="mid">⚡ Mid</option>
+                    <option value="bot">🏹 Bot (ADC)</option>
+                    <option value="support">🛡️ Support</option>
+                    <option value="fill">🎲 Fill</option>
+                </select>
+                <button class="btn-primary" onclick="addPlayer()">Add Player</button>
+            </div>
+        </div>
+
+        <div class="players-section">
+            <div class="player-list">
+                <h3>📋 Player List (<span id="playerCount">0</span>/10)</h3>
+                <div id="playersList"></div>
+            </div>
+            <div class="player-list">
+                <h3>📊 Quick Stats</h3>
+                <div id="statsDisplay">
+                    <div style="color: #c8aa6e; font-size: 14px; line-height: 1.6;">
+                        <p><strong>Average Rank:</strong> <span id="avgRank">-</span></p>
+                        <p><strong>Highest Rank:</strong> <span id="highestRank">-</span></p>
+                        <p><strong>Lowest Rank:</strong> <span id="lowestRank">-</span></p>
+                        <p><strong>Rank Spread:</strong> <span id="rankSpread">-</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-primary" onclick="balanceTeams()">⚖️ Balance Teams</button>
+            <button class="btn-secondary" onclick="shuffleTeams()">🎲 Random Teams</button>
+        </div>
+
+        <div class="teams-section">
+            <div class="team">
+                <h3>🔵 Blue Team</h3>
+                <div class="team-stats" id="blueStats">Average: -</div>
+                <div id="blueTeam"></div>
+            </div>
+            <div class="team">
+                <h3>🔴 Red Team</h3>
+                <div class="team-stats" id="redStats">Average: -</div>
+                <div id="redTeam"></div>
+            </div>
+        </div>
+
+        <div class="donation-section">
+            <div class="donation-card">
+                <p>💖 Enjoying the team maker? Consider buying me a coffee!</p>
+                <button class="btn-donation">☕ Donate</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let players = [];
+
+        const roleNames = {
+            'top': '🪓 Top',
+            'jungle': '🌿 Jungle', 
+            'mid': '⚡ Mid',
+            'bot': '🏹 Bot',
+            'support': '🛡️ Support',
+            'fill': '🎲 Fill'
+        };
+
+        const rankNames = {
+            1: "Iron IV", 2: "Iron III", 3: "Iron II", 4: "Iron I",
+            5: "Bronze IV", 6: "Bronze III", 7: "Bronze II", 8: "Bronze I",
+            9: "Silver IV", 10: "Silver III", 11: "Silver II", 12: "Silver I",
+            13: "Gold IV", 14: "Gold III", 15: "Gold II", 16: "Gold I",
+            17: "Platinum IV", 18: "Platinum III", 19: "Platinum II", 20: "Platinum I",
+            21: "Emerald IV", 22: "Emerald III", 23: "Emerald II", 24: "Emerald I",
+            25: "Diamond IV", 26: "Diamond III", 27: "Diamond II", 28: "Diamond I",
+            29: "Master", 30: "Grandmaster", 31: "Challenger"
+        };
+
+        function getRankClass(rankValue) {
+            if (rankValue <= 4) return 'rank-iron';
+            if (rankValue <= 8) return 'rank-bronze';
+            if (rankValue <= 12) return 'rank-silver';
+            if (rankValue <= 16) return 'rank-gold';
+            if (rankValue <= 20) return 'rank-platinum';
+            if (rankValue <= 24) return 'rank-emerald';
+            if (rankValue <= 28) return 'rank-diamond';
+            if (rankValue === 29) return 'rank-master';
+            if (rankValue === 30) return 'rank-grandmaster';
+            if (rankValue === 31) return 'rank-challenger';
+        }
+
+        function addPlayer() {
+            const name = document.getElementById('playerName').value.trim();
+            const rank = document.getElementById('playerRank').value;
+            const primaryRole = document.getElementById('primaryRole').value;
+            const secondaryRole = document.getElementById('secondaryRole').value;
+            
+            if (!name || !rank || !primaryRole) {
+                alert('Please enter name, rank, and at least a primary role!');
+                return;
+            }
+            
+            if (primaryRole === secondaryRole && primaryRole !== 'fill') {
+                alert('Primary and secondary roles cannot be the same (unless using Fill)!');
+                return;
+            }
+            
+            if (players.length >= 10) {
+                alert('Maximum 10 players allowed!');
+                return;
+            }
+
+            if (players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+                alert('Player already exists!');
+                return;
+            }
+            
+            players.push({
+                name: name,
+                rank: parseInt(rank),
+                primaryRole: primaryRole,
+                secondaryRole: secondaryRole || 'fill',
+                assignedRole: null,
+                id: Date.now()
+            });
+            
+            document.getElementById('playerName').value = '';
+            document.getElementById('playerRank').value = '';
+            document.getElementById('primaryRole').value = '';
+            document.getElementById('secondaryRole').value = '';
+            
+            updateDisplay();
+        }
+
+        function removePlayer(id) {
+            players = players.filter(p => p.id !== id);
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            updatePlayersList();
+            updateStats();
+            updatePlayerCount();
+            clearTeams();
+        }
+
+        function updatePlayersList() {
+            const playersList = document.getElementById('playersList');
+            if (players.length === 0) {
+                playersList.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No players added yet</div>';
+                return;
+            }
+            
+            playersList.innerHTML = players
+                .sort((a, b) => b.rank - a.rank)
+                .map(player => {
+                    const roleDisplay = player.secondaryRole === 'fill' || player.secondaryRole === player.primaryRole ? 
+                        roleNames[player.primaryRole] : 
+                        `${roleNames[player.primaryRole]} / ${roleNames[player.secondaryRole]}`;
+                    
+                    return `
+                        <div class="player-item">
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+                                    <strong>${player.name}</strong>
+                                    <span class="rank-badge ${getRankClass(player.rank)}">${rankNames[player.rank]}</span>
+                                </div>
+                                <div style="font-size: 12px; color: #c8aa6e;">
+                                    ${roleDisplay}
+                                </div>
+                            </div>
+                            <button class="remove-btn" onclick="removePlayer(${player.id})">×</button>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        function updateStats() {
+            const statsDisplay = document.getElementById('statsDisplay');
+            
+            if (players.length === 0) {
+                document.getElementById('avgRank').textContent = '-';
+                document.getElementById('highestRank').textContent = '-';
+                document.getElementById('lowestRank').textContent = '-';
+                document.getElementById('rankSpread').textContent = '-';
+                return;
+            }
+
+            const ranks = players.map(p => p.rank);
+            const avgRank = Math.round(ranks.reduce((a, b) => a + b, 0) / ranks.length);
+            const highest = Math.max(...ranks);
+            const lowest = Math.min(...ranks);
+            const spread = highest - lowest;
+
+            document.getElementById('avgRank').textContent = rankNames[avgRank] || `~${rankNames[closest(avgRank)]}`;
+            document.getElementById('highestRank').textContent = rankNames[highest];
+            document.getElementById('lowestRank').textContent = rankNames[lowest];
+            document.getElementById('rankSpread').textContent = spread + ' tiers';
+        }
+
+        function closest(target) {
+            return Object.keys(rankNames).reduce((prev, curr) => 
+                Math.abs(curr - target) < Math.abs(prev - target) ? curr : prev
+            );
+        }
+
+        function updatePlayerCount() {
+            document.getElementById('playerCount').textContent = players.length;
+        }
+
+        function balanceTeams() {
+            if (players.length < 2) {
+                alert('Need at least 2 players to create teams!');
+                return;
+            }
+
+            if (players.length === 10) {
+                // Full 10 players - try to create balanced teams with proper roles
+                const result = createBalancedTeamsWithRoles(players);
+                displayTeamsWithRoles(result.team1, result.team2);
+            } else {
+                // Less than 10 players - simple distribution
+                const sortedPlayers = [...players].sort((a, b) => b.rank - a.rank);
+                let team1 = [];
+                let team2 = [];
+                let team1Total = 0;
+                let team2Total = 0;
+                
+                for (let player of sortedPlayers) {
+                    if (team1.length < 5 && (team2.length >= 5 || team1Total <= team2Total)) {
+                        team1.push({...player, assignedRole: null});
+                        team1Total += player.rank;
+                    } else if (team2.length < 5) {
+                        team2.push({...player, assignedRole: null});
+                        team2Total += player.rank;
+                    }
+                }
+                
+                displayTeamsWithRoles(team1, team2);
+            }
+        }
+
+        function createBalancedTeamsWithRoles(allPlayers) {
+            const roles = ['top', 'jungle', 'mid', 'bot', 'support'];
+            let bestSolution = null;
+            let bestScore = -Infinity;
+            
+            // Try multiple configurations to find the best balance
+            for (let attempt = 0; attempt < 50; attempt++) {
+                const shuffledPlayers = [...allPlayers].sort(() => Math.random() - 0.5);
+                const result = tryAssignTeams(shuffledPlayers, roles);
+                
+                if (result) {
+                    const score = evaluateTeamBalance(result.team1, result.team2);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestSolution = result;
+                    }
+                }
+            }
+            
+            return bestSolution || fallbackTeamAssignment(allPlayers);
+        }
+
+        function tryAssignTeams(players, roles) {
+            const team1 = [];
+            const team2 = [];
+            const team1Roles = [...roles];
+            const team2Roles = [...roles];
+            const unassigned = [...players];
+            
+            // First pass: assign players to their primary roles
+            for (let i = unassigned.length - 1; i >= 0; i--) {
+                const player = unassigned[i];
+                if (player.primaryRole === 'fill') continue;
+                
+                const team1Index = team1Roles.indexOf(player.primaryRole);
+                const team2Index = team2Roles.indexOf(player.primaryRole);
+                
+                if (team1Index !== -1 && (team2Index === -1 || team1.length <= team2.length)) {
+                    team1.push({...player, assignedRole: player.primaryRole});
+                    team1Roles.splice(team1Index, 1);
+                    unassigned.splice(i, 1);
+                } else if (team2Index !== -1) {
+                    team2.push({...player, assignedRole: player.primaryRole});
+                    team2Roles.splice(team2Index, 1);
+                    unassigned.splice(i, 1);
+                }
+            }
+            
+            // Second pass: assign to secondary roles
+            for (let i = unassigned.length - 1; i >= 0; i--) {
+                const player = unassigned[i];
+                if (player.secondaryRole === 'fill' || player.secondaryRole === player.primaryRole) continue;
+                
+                const team1Index = team1Roles.indexOf(player.secondaryRole);
+                const team2Index = team2Roles.indexOf(player.secondaryRole);
+                
+                if (team1Index !== -1 && (team2Index === -1 || team1.length <= team2.length)) {
+                    team1.push({...player, assignedRole: player.secondaryRole});
+                    team1Roles.splice(team1Index, 1);
+                    unassigned.splice(i, 1);
+                } else if (team2Index !== -1) {
+                    team2.push({...player, assignedRole: player.secondaryRole});
+                    team2Roles.splice(team2Index, 1);
+                    unassigned.splice(i, 1);
+                }
+            }
+            
+            // Third pass: assign remaining players to any available roles
+            for (let player of unassigned) {
+                if (team1Roles.length > 0 && (team2Roles.length === 0 || team1.length <= team2.length)) {
+                    team1.push({...player, assignedRole: team1Roles.shift()});
+                } else if (team2Roles.length > 0) {
+                    team2.push({...player, assignedRole: team2Roles.shift()});
+                }
+            }
+            
+            // Check if we have valid teams
+            if (team1.length === 5 && team2.length === 5) {
+                return { team1, team2 };
+            }
+            
+            return null;
+        }
+
+        function evaluateTeamBalance(team1, team2) {
+            const team1Avg = team1.reduce((sum, p) => sum + p.rank, 0) / team1.length;
+            const team2Avg = team2.reduce((sum, p) => sum + p.rank, 0) / team2.length;
+            const rankBalance = 100 - Math.abs(team1Avg - team2Avg);
+            
+            // Bonus points for players in preferred roles
+            const team1RoleScore = team1.reduce((score, p) => {
+                if (p.assignedRole === p.primaryRole) return score + 10;
+                if (p.assignedRole === p.secondaryRole) return score + 5;
+                if (p.primaryRole === 'fill' || p.secondaryRole === 'fill') return score + 3;
+                return score;
+            }, 0);
+            
+            const team2RoleScore = team2.reduce((score, p) => {
+                if (p.assignedRole === p.primaryRole) return score + 10;
+                if (p.assignedRole === p.secondaryRole) return score + 5;
+                if (p.primaryRole === 'fill' || p.secondaryRole === 'fill') return score + 3;
+                return score;
+            }, 0);
+            
+            return rankBalance + (team1RoleScore + team2RoleScore);
+        }
+
+        function fallbackTeamAssignment(players) {
+            const roles = ['top', 'jungle', 'mid', 'bot', 'support'];
+            const team1 = [];
+            const team2 = [];
+            
+            players.forEach((player, index) => {
+                const roleIndex = index % 5;
+                if (index < 5) {
+                    team1.push({...player, assignedRole: roles[roleIndex]});
+                } else {
+                    team2.push({...player, assignedRole: roles[roleIndex]});
+                }
+            });
+            
+            return { team1, team2 };
+        }
+
+        function shuffleTeams() {
+            if (players.length < 2) {
+                alert('Need at least 2 players to create teams!');
+                return;
+            }
+
+            const shuffled = [...players].sort(() => Math.random() - 0.5);
+            const mid = Math.ceil(shuffled.length / 2);
+            const team1 = shuffled.slice(0, mid);
+            const team2 = shuffled.slice(mid);
+            
+            // Assign roles randomly for shuffle mode
+            const roles = ['top', 'jungle', 'mid', 'bot', 'support'];
+            
+            team1.forEach((player, index) => {
+                player.assignedRole = roles[index % roles.length];
+            });
+            
+            team2.forEach((player, index) => {
+                player.assignedRole = roles[index % roles.length];
+            });
+            
+            displayTeamsWithRoles(team1, team2);
+        }
+
+        function displayTeamsWithRoles(team1, team2) {
+            const blueTeam = document.getElementById('blueTeam');
+            const redTeam = document.getElementById('redTeam');
+            const blueStats = document.getElementById('blueStats');
+            const redStats = document.getElementById('redStats');
+            
+            const team1Avg = team1.length > 0 ? (team1.reduce((sum, p) => sum + p.rank, 0) / team1.length).toFixed(1) : 0;
+            const team2Avg = team2.length > 0 ? (team2.reduce((sum, p) => sum + p.rank, 0) / team2.length).toFixed(1) : 0;
+            
+            // Calculate role satisfaction
+            const team1Satisfaction = calculateRoleSatisfaction(team1);
+            const team2Satisfaction = calculateRoleSatisfaction(team2);
+            
+            blueStats.innerHTML = `Average: ${team1Avg} | Role Satisfaction: ${team1Satisfaction}% (${team1.length} players)`;
+            redStats.innerHTML = `Average: ${team2Avg} | Role Satisfaction: ${team2Satisfaction}% (${team2.length} players)`;
+            
+            // Sort teams by role order for display
+            const roleOrder = { 'top': 0, 'jungle': 1, 'mid': 2, 'bot': 3, 'support': 4 };
+            
+            blueTeam.innerHTML = team1
+                .sort((a, b) => (roleOrder[a.assignedRole] || 5) - (roleOrder[b.assignedRole] || 5))
+                .map(player => {
+                    const isPreferredRole = player.assignedRole === player.primaryRole || 
+                                           player.assignedRole === player.secondaryRole ||
+                                           player.primaryRole === 'fill' || 
+                                           player.secondaryRole === 'fill';
+                    
+                    return `
+                        <div class="player-item">
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+                                    <strong>${player.name}</strong>
+                                    <span class="rank-badge ${getRankClass(player.rank)}">${rankNames[player.rank]}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <span class="role-badge ${isPreferredRole ? 'role-assigned' : ''}">${roleNames[player.assignedRole]}</span>
+                                    ${!isPreferredRole ? '<span style="color: #ff6b35; font-size: 11px;">⚠️ Off-role</span>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('') || '<div style="text-align: center; color: #666; padding: 20px;">No players</div>';
+            
+            redTeam.innerHTML = team2
+                .sort((a, b) => (roleOrder[a.assignedRole] || 5) - (roleOrder[b.assignedRole] || 5))
+                .map(player => {
+                    const isPreferredRole = player.assignedRole === player.primaryRole || 
+                                           player.assignedRole === player.secondaryRole ||
+                                           player.primaryRole === 'fill' || 
+                                           player.secondaryRole === 'fill';
+                    
+                    return `
+                        <div class="player-item">
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+                                    <strong>${player.name}</strong>
+                                    <span class="rank-badge ${getRankClass(player.rank)}">${rankNames[player.rank]}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <span class="role-badge ${isPreferredRole ? 'role-assigned' : ''}">${roleNames[player.assignedRole]}</span>
+                                    ${!isPreferredRole ? '<span style="color: #ff6b35; font-size: 11px;">⚠️ Off-role</span>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('') || '<div style="text-align: center; color: #666; padding: 20px;">No players</div>';
+        }
+
+        function calculateRoleSatisfaction(team) {
+            if (team.length === 0) return 0;
+            
+            const satisfied = team.reduce((count, player) => {
+                if (player.assignedRole === player.primaryRole) return count + 1;
+                if (player.assignedRole === player.secondaryRole) return count + 1;
+                if (player.primaryRole === 'fill' || player.secondaryRole === 'fill') return count + 1;
+                return count;
+            }, 0);
+            
+            return Math.round((satisfied / team.length) * 100);
+        }
+
+        function clearTeams() {
+            document.getElementById('blueTeam').innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Teams will appear here</div>';
+            document.getElementById('redTeam').innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Teams will appear here</div>';
+            document.getElementById('blueStats').innerHTML = 'Average: -';
+            document.getElementById('redStats').innerHTML = 'Average: -';
+        }
+
+        // Allow Enter key to add player
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const activeElement = document.activeElement;
+                if (activeElement && ['playerName', 'playerRank', 'primaryRole', 'secondaryRole'].includes(activeElement.id)) {
+                    addPlayer();
+                }
+            }
+        });
+
+        // Handle donation button
+        document.querySelector('.btn-donation').addEventListener('click', function() {
+            alert('Thank you for considering a donation! 💖\n\nThis would typically redirect to a donation platform like PayPal, Ko-fi, or Buy Me a Coffee.');
+        });
+
+        // Initialize display
+        updateDisplay();
+    </script>
+</body>
+</html>
