@@ -236,6 +236,94 @@
             min-width: 200px;
         }
 
+        .round-tracker {
+            background: rgba(30, 35, 40, 0.8);
+            border: 2px solid #c8aa6e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        }
+
+        .round-tracker h3 {
+            color: #c8aa6e;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .round-scoreboard {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .round-team-score {
+            background: rgba(15, 20, 25, 0.6);
+            border: 1px solid #463714;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .round-team-name {
+            display: block;
+            color: #c8aa6e;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .round-team-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .round-divider {
+            color: #c8aa6e;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .round-summary {
+            text-align: center;
+            color: #f0e6d2;
+            font-size: 14px;
+            margin-bottom: 14px;
+            min-height: 20px;
+        }
+
+        .round-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .round-actions button {
+            min-width: 170px;
+            flex: 0 1 220px;
+        }
+
+        .btn-round-blue {
+            background: linear-gradient(45deg, #2b6cb0, #3182ce);
+            color: white;
+        }
+
+        .btn-round-blue:hover {
+            background: linear-gradient(45deg, #2c5282, #2b6cb0);
+        }
+
+        .btn-round-red {
+            background: linear-gradient(45deg, #c53030, #e53e3e);
+            color: white;
+        }
+
+        .btn-round-red:hover {
+            background: linear-gradient(45deg, #9b2c2c, #c53030);
+        }
+
         .remove-btn {
             background: #d9534f;
             color: white;
@@ -640,6 +728,28 @@
             <button class="btn-secondary" onclick="shuffleTeams()">🎲 Random Teams</button>
         </div>
 
+        <div class="round-tracker">
+            <h3>🏁 Round Win Tracker</h3>
+            <div class="round-scoreboard">
+                <div class="round-team-score">
+                    <span class="round-team-name">Blue Team Rounds</span>
+                    <span class="round-team-value" id="blueRoundWins">0</span>
+                </div>
+                <div class="round-divider">:</div>
+                <div class="round-team-score">
+                    <span class="round-team-name">Red Team Rounds</span>
+                    <span class="round-team-value" id="redRoundWins">0</span>
+                </div>
+            </div>
+            <div class="round-summary" id="roundSummary">No rounds recorded yet.</div>
+            <div class="round-actions">
+                <button class="btn-round-blue" onclick="recordRoundWin('blue')">Blue Won Round</button>
+                <button class="btn-round-red" onclick="recordRoundWin('red')">Red Won Round</button>
+                <button class="btn-secondary" onclick="undoLastRound()">Undo Last Round</button>
+                <button class="btn-primary" onclick="resetRoundTracker()">Reset Score</button>
+            </div>
+        </div>
+
         <div class="teams-section">
             <div class="team">
                 <h3>🔵 Blue Team</h3>
@@ -739,6 +849,8 @@
 
     <script>
         let players = [];
+        let roundWins = { blue: 0, red: 0 };
+        let roundHistory = [];
 
         const roleNames = {
             'top': '🪓 Top',
@@ -898,6 +1010,8 @@
                 return;
             }
 
+            resetRoundTracker();
+
             if (players.length === 10) {
                 // Full 10 players - try to create balanced teams with proper roles
                 const result = createBalancedTeamsWithRoles(players);
@@ -1054,6 +1168,8 @@
                 return;
             }
 
+            resetRoundTracker();
+
             const shuffled = [...players].sort(() => Math.random() - 0.5);
             const mid = Math.ceil(shuffled.length / 2);
             const team1 = shuffled.slice(0, mid);
@@ -1154,11 +1270,54 @@
             return Math.round((satisfied / team.length) * 100);
         }
 
+        function recordRoundWin(team) {
+            if (team !== 'blue' && team !== 'red') return;
+            roundWins[team] += 1;
+            roundHistory.push(team);
+            updateRoundTrackerDisplay();
+        }
+
+        function undoLastRound() {
+            const lastWinner = roundHistory.pop();
+            if (!lastWinner) return;
+            roundWins[lastWinner] = Math.max(0, roundWins[lastWinner] - 1);
+            updateRoundTrackerDisplay();
+        }
+
+        function resetRoundTracker() {
+            roundWins = { blue: 0, red: 0 };
+            roundHistory = [];
+            updateRoundTrackerDisplay();
+        }
+
+        function updateRoundTrackerDisplay() {
+            document.getElementById('blueRoundWins').textContent = roundWins.blue;
+            document.getElementById('redRoundWins').textContent = roundWins.red;
+
+            const totalRounds = roundWins.blue + roundWins.red;
+            const roundSummary = document.getElementById('roundSummary');
+
+            if (totalRounds === 0) {
+                roundSummary.textContent = 'No rounds recorded yet.';
+                return;
+            }
+
+            let leaderText = 'Series is tied.';
+            if (roundWins.blue > roundWins.red) {
+                leaderText = `Blue leads by ${roundWins.blue - roundWins.red}.`;
+            } else if (roundWins.red > roundWins.blue) {
+                leaderText = `Red leads by ${roundWins.red - roundWins.blue}.`;
+            }
+
+            roundSummary.textContent = `Rounds played: ${totalRounds}. ${leaderText} Next round: ${totalRounds + 1}.`;
+        }
+
         function clearTeams() {
             document.getElementById('blueTeam').innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Teams will appear here</div>';
             document.getElementById('redTeam').innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Teams will appear here</div>';
             document.getElementById('blueStats').innerHTML = 'Average: -';
             document.getElementById('redStats').innerHTML = 'Average: -';
+            resetRoundTracker();
         }
 
         // Allow Enter key to add player
