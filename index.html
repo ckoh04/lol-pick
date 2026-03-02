@@ -297,6 +297,97 @@
             justify-content: center;
         }
 
+        .quick-nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .quick-nav a {
+            background: rgba(30, 35, 40, 0.85);
+            border: 1px solid #463714;
+            color: #f0e6d2;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+        }
+
+        .quick-nav a:hover {
+            border-color: #c8aa6e;
+            color: #c8aa6e;
+        }
+
+        .content-section {
+            background: rgba(30, 35, 40, 0.8);
+            border: 2px solid #c8aa6e;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        }
+
+        .content-section h2 {
+            color: #c8aa6e;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .content-section p {
+            color: #f0e6d2;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .content-section ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #f0e6d2;
+            line-height: 1.6;
+        }
+
+        .content-section li {
+            margin-bottom: 6px;
+        }
+
+        .faq-item {
+            border: 1px solid #463714;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: rgba(15, 20, 25, 0.5);
+            padding: 12px 14px;
+        }
+
+        .faq-item summary {
+            cursor: pointer;
+            color: #c8aa6e;
+            font-weight: bold;
+        }
+
+        .faq-item p {
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
+        .site-footer {
+            margin-top: 26px;
+            text-align: center;
+            color: #c8aa6e;
+            font-size: 13px;
+        }
+
+        .site-footer a {
+            color: #f0e6d2;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        .site-footer a:hover {
+            color: #c8aa6e;
+        }
+
         .contact-card {
             width: 100%;
             max-width: 650px;
@@ -420,6 +511,36 @@
 <body>
     <div class="container">
         <h1>⚔️ League of Legends 5v5 Team Maker ⚔️</h1>
+
+        <nav class="quick-nav" aria-label="Page sections">
+            <a href="#about">About</a>
+            <a href="#how-to-use">How to Use</a>
+            <a href="#faq">FAQ</a>
+            <a href="#privacy-policy">Privacy Policy</a>
+            <a href="#contact-us">Contact</a>
+        </nav>
+
+        <section class="content-section" id="about">
+            <h2>About This Tool</h2>
+            <p>
+                This League of Legends team maker helps custom game lobbies build fair 5v5 teams.
+                It compares player ranks and role preferences to create balanced matchups quickly.
+            </p>
+            <p>
+                The tool is designed for in-house games, community nights, and scrim-style setups
+                where players want a fair split without manual calculations.
+            </p>
+        </section>
+
+        <section class="content-section" id="how-to-use">
+            <h2>How to Use</h2>
+            <ul>
+                <li>Add up to 10 players with rank plus primary and secondary roles.</li>
+                <li>Click <strong>Balance Teams</strong> for optimized matchmaking.</li>
+                <li>Click <strong>Random Teams</strong> if you want a less structured result.</li>
+                <li>Review team averages and role assignments before starting your game.</li>
+            </ul>
+        </section>
         
         <div class="input-section">
             <div class="input-group">
@@ -539,7 +660,46 @@
             </div>
         </div>
 
-        <div class="contact-section">
+        <section class="content-section" id="faq">
+            <h2>FAQ</h2>
+            <details class="faq-item">
+                <summary>How does team balancing work?</summary>
+                <p>
+                    The app compares rank points, prioritizes role fit, and searches for the best split
+                    across both teams.
+                </p>
+            </details>
+            <details class="faq-item">
+                <summary>Do I need an account to use this?</summary>
+                <p>
+                    No account is required. You can open the page and start adding players immediately.
+                </p>
+            </details>
+            <details class="faq-item">
+                <summary>Does this tool store player data permanently?</summary>
+                <p>
+                    No. Player entries are kept in browser memory for the current session and reset on refresh.
+                </p>
+            </details>
+        </section>
+
+        <section class="content-section" id="privacy-policy">
+            <h2>Privacy Policy</h2>
+            <p>
+                This site does not require login and does not store personal data on a backend server.
+                Information entered into the team maker is processed in your browser session.
+            </p>
+            <p>
+                We may use third-party services such as Google AdSense to show ads. These services may
+                use cookies or similar technologies to personalize ads and measure performance.
+            </p>
+            <p>
+                You can manage ad personalization and cookie settings through your Google account and
+                browser privacy controls.
+            </p>
+        </section>
+
+        <div class="contact-section" id="contact-us">
             <details class="contact-card">
                 <summary class="contact-toggle">
                     <h3>📬 Contact Us</h3>
@@ -566,6 +726,15 @@
                 </div>
             </details>
         </div>
+
+        <footer class="site-footer">
+            <a href="#about">About</a>
+            <a href="#how-to-use">How to Use</a>
+            <a href="#faq">FAQ</a>
+            <a href="#privacy-policy">Privacy Policy</a>
+            <a href="#contact-us">Contact</a>
+            <p>League of Legends is a trademark of Riot Games, Inc. This is an independent fan-made tool.</p>
+        </footer>
     </div>
 
     <script>
