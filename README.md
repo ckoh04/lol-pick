@@ -11,11 +11,11 @@ A browser-based 5v5 team builder for custom League of Legends games.
 
 ## File
 
-- `lol_team_maker.html` contains the full app (HTML, CSS, and JavaScript).
+- `index.html` contains the full app (HTML, CSS, and JavaScript).
 
 ## How to run
 
-1. Open `lol_team_maker.html` in any modern browser.
+1. Open `index.html` in any modern browser.
 2. Add players and roles.
 3. Click `Balance Teams` or `Random Teams`.
 
